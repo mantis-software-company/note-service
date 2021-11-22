@@ -6,7 +6,7 @@ SQLAlchemy-Utils~=0.37.8
 Flask-UUID~=0.2
 pyctuator~=0.16.0
 requests~=2.26.0
-SQLAlchemy~=1.4.25
+SQLAlchemy==1.3.23
 PyJWT[crypto]~=2.3.0
 oauthlib~=3.1.1
 psycopg2-binary~=2.9.2
