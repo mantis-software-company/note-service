@@ -53,7 +53,7 @@ def fetch_note(note_id):
     return ResponseObject(data=_response, status=HTTPStatus.OK)
 
 
-def update_note(note_id, args, username):
+def update_note(args, note_id, username):
     try:
         note = Notes.query.filter(Notes.id == note_id).one()
     except NoResultFound as e:

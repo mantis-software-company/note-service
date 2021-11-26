@@ -48,9 +48,9 @@ class NoteItemCollection(MethodView):
     @notes.response(HTTPStatus.OK, BaseResponse)
     @notes.alt_response(status_code=HTTPStatus.NOT_FOUND, success=False, schema=BaseResponse)
     @notes.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
-    def put(*args, **kwargs):
+    def put(self, args, note_id, **kwargs):
         """ID bilgisi verilen notu verilen parametrelere göre düzenlemek için kullanılır"""
-        return update_note(**kwargs)
+        return update_note(args, note_id, **kwargs)
 
     @token_required
     @notes.response(HTTPStatus.OK, BaseResponse)
