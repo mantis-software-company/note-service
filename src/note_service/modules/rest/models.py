@@ -2,11 +2,11 @@ import uuid
 
 from note_service.database import db
 from sqlalchemy_utils import UUIDType
-
+from sqlalchemy_utils import ScalarListType
 
 class Notes(db.Model):
     id = db.Column(UUIDType(binary=False), primary_key=True)
-    tag = db.Column(db.String(80))
+    tag = db.Column(ScalarListType(str))
     note_info = db.Column(db.Text)
     attachment_file_key = db.Column(db.String)
     created_date = db.Column(db.TIMESTAMP)

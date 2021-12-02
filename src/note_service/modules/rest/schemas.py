@@ -20,7 +20,7 @@ class Pagination(Schema):
 
 class Note(Schema):
     id = fields.UUID(dump_only=True)
-    tag = fields.String(required=True, validate=validate.Length(min=5))
+    tag = fields.List(fields.String, required=True)
     note_info = fields.String(required=True, validate=validate.Length(min=2))
     attachment_file_key = fields.UUID(dump_only=True)
     created_date = fields.DateTime(dump_only=True)
@@ -31,6 +31,7 @@ class Note(Schema):
 
 class NoteSearch(Note):
     note_info = fields.String(dump_only=True)
+    tag = fields.String(required=True)
 
 
 class NoteResponse(BaseResponse):

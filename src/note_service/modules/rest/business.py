@@ -32,12 +32,13 @@ def create_note(files, args, username):
             tb = traceback.format_exc()
             return abort(HTTPStatus.BAD_GATEWAY, message="Note couldn't created.", messages=tb, exc=e)
     db.session.commit()
-    return ResponseObject(message="Note successfully created.", status=HTTPStatus.OK)
+    db.session.refresh(note)
+    return ResponseObject(data={"id": note.id}, message="Note successfully created.", status=HTTPStatus.OK)
 
 
 def search_notes(args, pagination_parameters):
     tag = args.get("tag")
-    _response = Notes.query.filter(Notes.tag == tag).paginate(pagination_parameters.page, pagination_parameters.page_size)
+    _response = Notes.query.filter(Notes.tag.contains([tag])).paginate(pagination_parameters.page, pagination_parameters.page_size)
     pagination_parameters.item_count = _response.total
     return ResponseObject(data=_response.items,
                           page=PaginationObject(page=_response.page, total_pages=_response.pages,
