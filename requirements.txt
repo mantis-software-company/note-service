@@ -1,5 +1,6 @@
 marshmallow~=3.14.0
 Flask~=2.0.2
+Flask-Cors~=3.0.10
 flask-smorest~=0.35.0
 Flask-SQLAlchemy~=2.5.1
 SQLAlchemy-Utils~=0.37.8
