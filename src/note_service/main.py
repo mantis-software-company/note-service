@@ -15,8 +15,10 @@ from note_service.utils.settings import apply_settings
 
 app = Flask(__name__)
 flask_uuid = FlaskUUID(app)
-CORS(app)
-
+CORS_ALLOW_ORIGIN="*,*"
+CORS_EXPOSE_HEADERS="*,*"
+CORS_ALLOW_HEADERS="content-type,*"
+cors = CORS(app, origins=CORS_ALLOW_ORIGIN.split(","), allow_headers=CORS_ALLOW_HEADERS.split(",") , expose_headers= CORS_EXPOSE_HEADERS.split(","),   supports_credentials = True)
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
