@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 from flask import Flask
+from flask_cors import CORS
 from flask_uuid import FlaskUUID
 from flask_smorest import Api
 from pyctuator.health.db_health_provider import DbHealthProvider
@@ -14,6 +15,7 @@ from note_service.utils.settings import apply_settings
 
 app = Flask(__name__)
 flask_uuid = FlaskUUID(app)
+CORS(app)
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
