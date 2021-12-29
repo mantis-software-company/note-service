@@ -26,7 +26,7 @@ def _parse_jwt_user(token):
                              options={"verify_exp": True})
     
     
-    username = decoded_jwt.get("preferred_username")
+    username = decoded_jwt.get("sub")
     return username
 
 
