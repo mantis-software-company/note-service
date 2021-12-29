@@ -24,13 +24,10 @@ def _parse_jwt_user(token):
 
     decoded_jwt = jwt.decode(token, signing_key.key, algorithms=["RS256"], audience="realm-management",
                              options={"verify_exp": True})
-    groups = decoded_jwt.get('groups')
-
-    if authorized_group in groups:
-        username = decoded_jwt.get("preferred_username")
-        return username
-    else:
-        return None
+    
+    
+    username = decoded_jwt.get("preferred_username")
+    return username
 
 
 def token_required(self):
