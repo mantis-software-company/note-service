@@ -22,7 +22,7 @@ def _parse_jwt_user(token):
     jwks_client = PyJWKClient(jwks_url)
     signing_key = jwks_client.get_signing_key_from_jwt(token)
 
-    decoded_jwt = jwt.decode(token, signing_key.key, algorithms=["RS256"], audience="realm-management",
+    decoded_jwt = jwt.decode(token, signing_key.key, algorithms=["RS256"], audience="account",
                              options={"verify_exp": True})
     
     
