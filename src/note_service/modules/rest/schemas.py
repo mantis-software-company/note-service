@@ -22,6 +22,7 @@ class Note(Schema):
     id = fields.UUID(dump_only=True)
     tag = fields.List(fields.String, required=True)
     note_info = fields.String(required=True, validate=validate.Length(min=2))
+    has_attachment = fields.Boolean(dump_only=True)
     attachment_file_key = fields.UUID(dump_only=True)
     created_date = fields.DateTime(dump_only=True)
     updated_date = fields.DateTime(dump_only=True)

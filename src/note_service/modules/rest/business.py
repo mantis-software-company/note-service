@@ -16,7 +16,7 @@ from note_service.modules.rest.utils import ResponseObject, PaginationObject
 def create_note(files, args, username):
     tag = args.get('tag')
     note_info = args.get('note_info')
-    note = Notes(tag, note_info, None, created_date=datetime.now(), created_by=username)
+    note = Notes(tag, note_info, False, None, created_date=datetime.now(), created_by=username)
     db.session.add(note)
     if files:
         try:
@@ -25,6 +25,7 @@ def create_note(files, args, username):
             file_service_upload_url = current_app.config.get('FILE_SERVICE_UPLOAD_URL')
             r = requests.post(file_service_upload_url, files={"file": (attachment.filename, f, attachment.mimetype)})
             attachment_file_key = r.json()["key"]
+            note.has_attachment = True
             note.attachment_file_key = attachment_file_key
             db.session.add(note)
         except Exception as e:
@@ -89,3 +90,26 @@ def delete_note(note_id):
         abort(HTTPStatus.BAD_GATEWAY, message="Note couldn't deleted.", exc=e)
 
     return ResponseObject(message="Note successfully deleted.", status=HTTPStatus.OK)
+
+
+def get_pdf_key(note_id):
+    try:
+        note = Notes.query.filter(Notes.id == note_id).one()
+    except NoResultFound as e:
+        abort(HTTPStatus.NOT_FOUND, message="Note not found.", exc=e)
+    pass
+
+    if not note.has_attachment:
+        abort(HTTPStatus.NOT_FOUND, message="Note has no attachment.", exc=e)
+
+    file_service_download_url = current_app.config.get('FILE_SERVICE_DOWNLOAD_URL')
+    pdf_service_key_url = current_app.config.get('PDF_SERVICE_KEY_URL')
+    r = requests.post(
+        pdf_service_key_url,
+        json={'url': f'{file_service_download_url}/{note.attachment_file_key}?contentDisposition=inline'}
+    )
+
+    if r.status_code == 200 or r.status_code == 201:
+        return ResponseObject(data={"pdfKey": r.text}, status=HTTPStatus.OK)
+    else:
+        return ResponseObject(message="Pdf key couldn't generated.", exc=e)

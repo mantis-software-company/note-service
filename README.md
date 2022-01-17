@@ -20,23 +20,29 @@ Access token will persist in cookie for future use.
 ## Environment Variables
 
 
--  `OAUTHLIB_INSECURE_TRANSPORT`: Set `True` for non-https environments
+- `OAUTHLIB_INSECURE_TRANSPORT`: Set `True` for non-https environments
 
--  `__SERVICE_SQLALCHEMY_DATABASE_URI`: Database URI. Ex. `sqlite:///db.sqlite`
+- `__SERVICE_SQLALCHEMY_DATABASE_URI`: Database URI. Ex. `sqlite:///db.sqlite`
 
 - `__SERVICE_ACTUATOR_BASE_URI`: Full URL for actuator endpoint.
 
--  `__SERVICE_SSO_DISCOVERY_URL`: OpenID configuration endpoint of SSO tool.
+- `__SERVICE_SSO_DISCOVERY_URL`: OpenID configuration endpoint of SSO tool.
 
--  `__SERVICE_SSO_CLIENT_ID`: SSO Client ID
+- `__SERVICE_SSO_CLIENT_ID`: SSO Client ID
 
--  `__SERVICE_SSO_CLIENT_SECRET`: SSO Client Secret
+- `__SERVICE_SSO_CLIENT_SECRET`: SSO Client Secret
 
--  `__SERVICE_JWT_COOKIE_NAME`: JWT token cookie name
+- `__SERVICE_SSO_TARGET_AUDIENCE`: SSO Audience for JWT validation.
 
--  `__SERVICE_FILE_SERVICE_UPLOAD_URL`: File service api url for uploading attachment
+- `__SERVICE_JWT_COOKIE_NAME`: JWT token cookie name
 
--  `__SERVICE_AUTHORIZED_GROUP`: Set group name in SSO (Put / before it for Keycloak.)
+- `__SERVICE_FILE_SERVICE_UPLOAD_URL`: File service api url for uploading attachment
+
+- `__SERVICE_FILE_SERVICE_DOWNLOAD_URL`: File service api url for downloading attachment
+
+- `__SERVICE_PDF_SERVICE_KEY_URL`: PDF service api url for securely previewing the note attachments
+
+- `__SERVICE_AUTHORIZED_GROUP`: Set group name in SSO (Put / before it for Keycloak.)
 
 Other application settings in [config.py](src/note_service/config.py)   could be overrided with environment variables with `__SERVICE_` prefix.
 

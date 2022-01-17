@@ -3,7 +3,8 @@ from http import HTTPStatus
 from flask.views import MethodView
 from flask_smorest import Blueprint
 
-from note_service.modules.rest.business import search_notes, create_note, fetch_note, update_note, delete_note
+from note_service.modules.rest.business import search_notes, create_note, fetch_note, update_note, delete_note, \
+    get_pdf_key
 from note_service.modules.rest.decorators import token_required
 from note_service.modules.rest.schemas import Note, NoteFile, NotesResponse, NoteResponse, BaseResponse, NoteSearch
 
@@ -60,5 +61,12 @@ class NoteItemCollection(MethodView):
         """ID bilgisi verilen notu silmek için kullanılır"""
         return delete_note(note_id)
 
-
+@notes.route("/<uuid:note_id>/pdfKey")
+class NoteItemCollection(MethodView):
+    @token_required
+    @notes.response(HTTPStatus.OK, BaseResponse)
+    @notes.alt_response(status_code=HTTPStatus.NOT_FOUND, success=False, schema=BaseResponse)
+    def get(self, note_id, **kwargs):
+        """Not'un ekini görüntülenmek için pdf anahtarı oluşturur """
+        return get_pdf_key(note_id)
 
