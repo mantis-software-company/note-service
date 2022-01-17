@@ -28,6 +28,9 @@ class Note(Schema):
     updated_date = fields.DateTime(dump_only=True)
     created_by = fields.String(dump_only=True)
     updated_by = fields.String(dump_only=True)
+    
+    class Meta:
+        exclude = ('attachment_file_key', )
 
 
 class NoteSearch(Note):
