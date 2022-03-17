@@ -34,7 +34,7 @@ class Note(Schema):
 
 
 class NoteSearch(Note):
-    note_info = fields.String(dump_only=True)
+    note_info = fields.String(required=False)
     tag = fields.String(required=True)
 
 

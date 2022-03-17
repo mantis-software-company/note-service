@@ -39,7 +39,11 @@ def create_note(files, args, username):
 
 def search_notes(args, pagination_parameters):
     tag = args.get("tag")
-    _response = Notes.query.filter(Notes.tag.contains([tag])).order_by(Notes.created_date.desc()).paginate(pagination_parameters.page, pagination_parameters.page_size)
+    note_info = args.get("note_info")
+    _response = Notes.query
+    if note_info:
+        _response = _response.filter(Notes.note_info.ilike("%" + note_info + "%"))
+    _response = _response.filter(Notes.tag.contains([tag])).order_by(Notes.created_date.desc()).paginate(pagination_parameters.page, pagination_parameters.page_size)
     pagination_parameters.item_count = _response.total
     return ResponseObject(data=_response.items,
                           page=PaginationObject(page=_response.page, total_pages=_response.pages,
