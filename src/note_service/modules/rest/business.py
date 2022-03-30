@@ -6,7 +6,9 @@ from http import HTTPStatus
 import requests as requests
 from flask import current_app
 from flask_smorest import abort
+from sqlalchemy import func, column
 from sqlalchemy.orm.exc import NoResultFound
+
 
 from note_service.database import db
 from note_service.modules.rest.models import Notes
