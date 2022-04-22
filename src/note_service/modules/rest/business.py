@@ -46,7 +46,7 @@ def search_notes(args, pagination_parameters):
     _response = _response.select_from(func.unnest(func.string_to_array(Notes.tag, ',')).alias("tags")).filter(column("tags").like(tag))
     if note_info:
         _response = _response.filter(Notes.note_info.ilike("%" + note_info + "%"))
-    _response = _response.order_by(Notes.created_date.desc()).paginate(pagination_parameters.page, pagination_parameters.page_size)
+    _response = _response.distinct().order_by(Notes.created_date.desc()).paginate(pagination_parameters.page, pagination_parameters.page_size)
     pagination_parameters.item_count = _response.total
     return ResponseObject(data=_response.items,
                           page=PaginationObject(page=_response.page, total_pages=_response.pages,
