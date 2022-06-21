@@ -6,13 +6,11 @@ from http import HTTPStatus
 import requests as requests
 from flask import current_app
 from flask_smorest import abort
-from sqlalchemy import func, column
-from sqlalchemy.orm.exc import NoResultFound
-
-
 from note_service.database import db
 from note_service.modules.rest.models import Notes
 from note_service.modules.rest.utils import ResponseObject, PaginationObject
+from sqlalchemy import func, column
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def create_note(files, args, username):
@@ -46,12 +44,26 @@ def search_notes(args, pagination_parameters):
     _response = _response.select_from(func.unnest(func.string_to_array(Notes.tag, ',')).alias("tags")).filter(column("tags").like(tag))
     if note_info:
         _response = _response.filter(Notes.note_info.ilike("%" + note_info + "%"))
-    _response = _response.distinct().order_by(Notes.created_date.desc()).paginate(pagination_parameters.page, pagination_parameters.page_size)
+    _response = _response.distinct().order_by(Notes.created_date.desc()).paginate(pagination_parameters.page,
+                                                                                  pagination_parameters.page_size)
     pagination_parameters.item_count = _response.total
     return ResponseObject(data=_response.items,
                           page=PaginationObject(page=_response.page, total_pages=_response.pages,
                                                 total=_response.total),
                           status=HTTPStatus.OK)
+
+
+def search_item_count(args):
+    tag = args.get("tag")
+    note_info = args.get("note_info")
+    _response = Notes.query
+    _response = _response.select_from(func.unnest(func.string_to_array(Notes.tag, ',')).alias("tags")).filter(
+        column("tags").like(tag))
+    if note_info:
+        _response = _response.filter(Notes.note_info.ilike("%" + note_info + "%"))
+    _response = _response.distinct()
+
+    return ResponseObject(data={"count": str(_response.count())}, status=HTTPStatus.OK)
 
 
 def fetch_note(note_id):

@@ -4,7 +4,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 
 from note_service.modules.rest.business import search_notes, create_note, fetch_note, update_note, delete_note, \
-    get_pdf_key
+    get_pdf_key, search_item_count
 from note_service.modules.rest.decorators import token_required
 from note_service.modules.rest.schemas import Note, NoteFile, NotesResponse, NoteResponse, BaseResponse, NoteSearch
 
@@ -33,6 +33,16 @@ class NoteSearchCollection(MethodView):
     def get(self, args, pagination_parameters, **kwargs):
         """Verilen tag bilgisine göre not aramak için kullanılır"""
         return search_notes(args, pagination_parameters)
+
+
+@notes.route("/search/count")
+class NoteSearchCountCollection(MethodView):
+    @token_required
+    @notes.arguments(NoteSearch, location="query")
+    @notes.response(HTTPStatus.OK, BaseResponse)
+    def get(self, args, **kwargs):
+        """Verilen tag bilgisine göre not aramak için kullanılır"""
+        return search_item_count(args)
 
 
 @notes.route("/<uuid:note_id>")
@@ -69,4 +79,3 @@ class NoteItemCollection(MethodView):
     def get(self, note_id, **kwargs):
         """Not'un ekini görüntülenmek için pdf anahtarı oluşturur """
         return get_pdf_key(note_id)
-
