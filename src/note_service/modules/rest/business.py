@@ -16,7 +16,8 @@ from sqlalchemy.orm.exc import NoResultFound
 def create_note(files, args, username):
     tag = args.get('tag')
     note_info = args.get('note_info')
-    note = Notes(tag, note_info, False, None, created_date=datetime.now(), created_by=username)
+    note = Notes(tag=tag, note_info=note_info, has_attachment=False, attachment_file_key=None,
+                 attachment_mime_type=None, created_date=datetime.now(), created_by=username)
     db.session.add(note)
     if files:
         try:
@@ -27,6 +28,7 @@ def create_note(files, args, username):
             attachment_file_key = r.json()["key"]
             note.has_attachment = True
             note.attachment_file_key = attachment_file_key
+            note.attachment_mime_type = attachment.mimetype
             db.session.add(note)
         except Exception as e:
             db.session.rollback()
@@ -111,7 +113,7 @@ def delete_note(note_id):
     return ResponseObject(message="Note successfully deleted.", status=HTTPStatus.OK)
 
 
-def get_pdf_key(note_id):
+def get_file_url(note_id):
     try:
         note = Notes.query.filter(Notes.id == note_id).one()
     except NoResultFound as e:
@@ -122,13 +124,6 @@ def get_pdf_key(note_id):
         abort(HTTPStatus.NOT_FOUND, message="Note has no attachment.", exc=e)
 
     file_service_download_url = current_app.config.get('FILE_SERVICE_DOWNLOAD_URL')
-    pdf_service_key_url = current_app.config.get('PDF_SERVICE_KEY_URL')
-    r = requests.post(
-        pdf_service_key_url,
-        json={'url': f'{file_service_download_url}/{note.attachment_file_key}?contentDisposition=inline'}
-    )
+    response = {'url': f'{file_service_download_url}/{note.attachment_file_key}?contentDisposition=inline&contentType={note.attachment_mime_type}'}
 
-    if r.status_code == 200 or r.status_code == 201:
-        return ResponseObject(data={"pdfKey": r.text}, status=HTTPStatus.OK)
-    else:
-        return ResponseObject(message="Pdf key couldn't generated.", exc=e)
+    return ResponseObject(data=response, status=HTTPStatus.OK)

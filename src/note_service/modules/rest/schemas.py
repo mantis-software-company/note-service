@@ -24,13 +24,14 @@ class Note(Schema):
     note_info = fields.String(required=True, validate=validate.Length(min=2))
     has_attachment = fields.Boolean(dump_only=True)
     attachment_file_key = fields.UUID(dump_only=True)
+    attachment_mime_type = fields.String(dump_only=True)
     created_date = fields.DateTime(dump_only=True)
     updated_date = fields.DateTime(dump_only=True)
     created_by = fields.String(dump_only=True)
     updated_by = fields.String(dump_only=True)
     
     class Meta:
-        exclude = ('attachment_file_key', )
+        exclude = ('attachment_file_key', 'attachment_mime_type')
 
 
 class NoteSearch(Note):
