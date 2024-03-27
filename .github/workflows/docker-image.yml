@@ -50,6 +50,6 @@ jobs:
         name: Push Readme to Docker Hub
         uses: peter-evans/dockerhub-description@v2
         with:
-          username: mantissoftware
+          username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_PASS }}
           repository: mantissoftware/note-service
