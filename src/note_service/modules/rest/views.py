@@ -4,24 +4,26 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 
 from note_service.modules.rest.business import search_notes, create_note, fetch_note, update_note, delete_note, \
-    get_file_url, search_item_count
+    get_file_url, search_item_count, upload_attachment_file, delete_attachment
 from note_service.modules.rest.decorators import token_required
-from note_service.modules.rest.schemas import Note, NoteFile, NotesResponse, NoteResponse, BaseResponse, NoteSearch
+from note_service.modules.rest.schemas import Note, NoteFile, NotesResponse, NoteResponse, BaseResponse, NoteSearch, \
+    AttachmentResponse
 
 notes = Blueprint("Notes", "pets", url_prefix="/api/v1/notes", description="Not işlemleri için kullanılan servis")
+attachments = Blueprint("Attachments", "pets", url_prefix="/api/v1/attachments",
+                        description="Not ekleri işlemleri için kullanılan servis")
 
 
 @notes.route("/")
 class NotesCollection(MethodView):
     @token_required
-    @notes.arguments(NoteFile, location="files")
-    @notes.arguments(Note, location="query")
+    @notes.arguments(Note, location="json")
     @notes.response(HTTPStatus.CREATED, BaseResponse)
     @notes.alt_response(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, success=False, schema=BaseResponse)
     @notes.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
-    def post(self, files, args, username):
+    def post(self, args, username):
         """Yeni not oluşturmak için kullanılır"""
-        return create_note(files, args, username)
+        return create_note(args, username)
 
 
 @notes.route("/search")
@@ -72,7 +74,7 @@ class NoteItemCollection(MethodView):
         return delete_note(note_id)
 
 
-@notes.route("/<uuid:note_id>/attachmentUrl")
+@notes.route("/<uuid:note_id>/attachmentUrls")
 class NoteItemCollection(MethodView):
     @token_required
     @notes.response(HTTPStatus.OK, BaseResponse)
@@ -80,3 +82,26 @@ class NoteItemCollection(MethodView):
     def get(self, note_id, **kwargs):
         """Not'un ekini görüntülenmek için dosya urli oluşturur """
         return get_file_url(note_id)
+
+
+@notes.route("/<uuid:note_id>/attachment/<uuid:attachment_file_key>")
+class NoteAttachmentDeleteCollection(MethodView):
+    @token_required
+    @notes.response(HTTPStatus.OK, BaseResponse)
+    @notes.alt_response(status_code=HTTPStatus.NOT_FOUND, success=False, schema=BaseResponse)
+    @notes.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
+    def delete(self, note_id, attachment_file_key, **kwargs):
+        """ID bilgisi verilen nottan file keyi verilen eki siler"""
+        return delete_attachment(note_id, attachment_file_key)
+
+
+@attachments.route("/upload")
+class AttachmentUploadCollection(MethodView):
+    @token_required
+    @attachments.arguments(NoteFile, location="files")
+    @attachments.response(HTTPStatus.CREATED, AttachmentResponse)
+    @attachments.alt_response(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, success=False, schema=BaseResponse)
+    @attachments.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
+    def post(self, files, **kwargs):
+        """Ek yükler"""
+        return upload_attachment_file(files)

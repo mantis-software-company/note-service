@@ -9,7 +9,7 @@ from pyctuator.health.db_health_provider import DbHealthProvider
 from pyctuator.pyctuator import Pyctuator
 
 from note_service.modules.auth.views import auth_blueprint
-from note_service.modules.rest.views import notes
+from note_service.modules.rest.views import notes, attachments
 from note_service.database import db
 from note_service.utils.settings import apply_settings
 
@@ -44,6 +44,7 @@ actuator.register_health_provider(DbHealthProvider(db_engine))
 api = Api(app, spec_kwargs=app.config.get("SWAGGER_AUTHORIZATION_SETTINGS"))
 Api.DEFAULT_ERROR_RESPONSE_NAME = None
 api.register_blueprint(notes)
+api.register_blueprint(attachments)
 app.register_blueprint(auth_blueprint)
 
 

@@ -18,30 +18,38 @@ class Pagination(Schema):
     total = fields.Integer()
 
 
+class Attachment(Schema):
+    attachment_file_key = fields.UUID()
+    attachment_mime_type = fields.String()
+
+
 class Note(Schema):
     id = fields.UUID(dump_only=True)
     tag = fields.List(fields.String, required=True)
     note_info = fields.String(required=True, validate=validate.Length(min=2))
     has_attachment = fields.Boolean(dump_only=True)
-    attachment_file_key = fields.UUID(dump_only=True)
-    attachment_mime_type = fields.String(dump_only=True)
+    attachments = fields.Nested(Attachment, many=True)
     created_date = fields.DateTime(dump_only=True)
     updated_date = fields.DateTime(dump_only=True)
     created_by = fields.String(dump_only=True)
     updated_by = fields.String(dump_only=True)
-    
-    class Meta:
-        exclude = ('attachment_file_key', 'attachment_mime_type')
 
 
 class NoteSearch(Note):
     note_info = fields.String(required=False)
     tag = fields.String(required=True)
 
+    class Meta:
+        exclude = ('attachments',)
+
 
 class NoteResponse(BaseResponse):
     data = fields.Nested(Note)
     page = fields.Nested(Pagination)
+
+
+class AttachmentResponse(BaseResponse):
+    data = fields.Nested(Attachment)
 
 
 class NotesResponse(NoteResponse):
