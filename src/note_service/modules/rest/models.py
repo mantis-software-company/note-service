@@ -47,8 +47,10 @@ class AttachmentsModel(db.Model):
     note = db.relationship("NotesModel", back_populates="attachments",  cascade="save-update, merge, refresh-expire")
     attachment_file_key = db.Column(db.String)
     attachment_mime_type = db.Column(db.String)
+    attachment_file_name = db.Column(db.String)
 
-    def __init__(self, attachment_file_key, attachment_mime_type):
+    def __init__(self, attachment_file_key, attachment_mime_type, attachment_file_name):
         self.id = uuid.uuid4()
         self.attachment_file_key = str(attachment_file_key)
         self.attachment_mime_type = attachment_mime_type
+        self.attachment_file_name = attachment_file_name

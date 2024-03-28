@@ -21,6 +21,7 @@ class Pagination(Schema):
 class Attachment(Schema):
     attachment_file_key = fields.UUID()
     attachment_mime_type = fields.String()
+    attachment_file_name = fields.String()
 
 
 class Note(Schema):

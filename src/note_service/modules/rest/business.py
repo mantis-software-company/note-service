@@ -21,7 +21,8 @@ def create_note(args, username):
 
     if _attachments:
         attachments = [AttachmentsModel(attachment_file_key=_attachment.get("attachment_file_key"),
-                                        attachment_mime_type=_attachment.get("attachment_mime_type")) for _attachment in
+                                        attachment_mime_type=_attachment.get("attachment_mime_type"),
+                                        attachment_file_name=_attachment.get("attachment_file_name")) for _attachment in
                        _attachments]
     else:
         attachments = None
@@ -139,7 +140,7 @@ def upload_attachment_file(files):
     attachment_file_key = r.json()["key"]
     attachment_mime_type = attachment.mimetype
     return ResponseObject(
-        data={"attachment_file_key": attachment_file_key, "attachment_mime_type": attachment_mime_type},
+        data={"attachment_file_key": attachment_file_key, "attachment_mime_type": attachment_mime_type, "attachment_file_name": attachment.filename},
         status=HTTPStatus.CREATED)
 
 
