@@ -127,9 +127,9 @@ def get_file_url(note_id):
 
     file_service_download_url = current_app.config.get('FILE_SERVICE_DOWNLOAD_URL')
 
-    urls = [{attachment.attachment_file_key: f'{file_service_download_url}/{attachment.attachment_file_key}?contentDisposition=inline&contentType={attachment.attachment_mime_type}'} for attachment in note.attachments]
+    attachments = [{"attachment_file_key": attachment.attachment_file_key, "attachment_file_name": attachment.attachment_file_name, "attachment_file_url": f'{file_service_download_url}/{attachment.attachment_file_key}?contentDisposition=inline&contentType={attachment.attachment_mime_type}'} for attachment in note.attachments]
 
-    return ResponseObject(data={"urls": urls}, status=HTTPStatus.OK)
+    return ResponseObject(data={"attachments": attachments}, status=HTTPStatus.OK)
 
 
 def upload_attachment_file(files):
