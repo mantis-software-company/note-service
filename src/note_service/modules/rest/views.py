@@ -10,9 +10,6 @@ from note_service.modules.rest.schemas import Note, NoteFile, NotesResponse, Not
     AttachmentResponse
 
 notes = Blueprint("Notes", "pets", url_prefix="/api/v1/notes", description="Not işlemleri için kullanılan servis")
-attachments = Blueprint("Attachments", "pets", url_prefix="/api/v1/attachments",
-                        description="Not ekleri işlemleri için kullanılan servis")
-
 
 @notes.route("/")
 class NotesCollection(MethodView):
@@ -95,13 +92,13 @@ class NoteAttachmentDeleteCollection(MethodView):
         return delete_attachment(note_id, attachment_file_key)
 
 
-@attachments.route("/upload")
+@notes.route("attachment/upload")
 class AttachmentUploadCollection(MethodView):
     @token_required
-    @attachments.arguments(NoteFile, location="files")
-    @attachments.response(HTTPStatus.CREATED, AttachmentResponse)
-    @attachments.alt_response(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, success=False, schema=BaseResponse)
-    @attachments.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
+    @notes.arguments(NoteFile, location="files")
+    @notes.response(HTTPStatus.CREATED, AttachmentResponse)
+    @notes.alt_response(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, success=False, schema=BaseResponse)
+    @notes.alt_response(status_code=HTTPStatus.BAD_GATEWAY, success=False, schema=BaseResponse)
     def post(self, files, **kwargs):
         """Ek yükler"""
         return upload_attachment_file(files)
