@@ -87,8 +87,21 @@ def update_note(args, note_id, username):
     try:
         tag = args.get("tag")
         note_info = args.get("note_info")
+
+        _attachments = args.get('attachments')
+
+        if _attachments:
+            attachments = [AttachmentsModel(attachment_file_key=_attachment.get("attachment_file_key"),
+                                            attachment_mime_type=_attachment.get("attachment_mime_type"),
+                                            attachment_file_name=_attachment.get("attachment_file_name")) for
+                           _attachment in
+                           _attachments]
+        else:
+            attachments = []
+
         note.tag = tag
         note.note_info = note_info
+        note.attachments = attachments
         note.updated_date = datetime.now()
         note.updated_by = username
         db.session.add(note)

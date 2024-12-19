@@ -29,7 +29,7 @@ class Note(Schema):
     tag = fields.List(fields.String, required=True)
     note_info = fields.String(required=True, validate=validate.Length(min=2))
     has_attachment = fields.Boolean(dump_only=True)
-    attachments = fields.Nested(Attachment, many=True)
+    attachments = fields.Nested(Attachment, many=True, required=False, allow_none=True)
     created_date = fields.DateTime(dump_only=True)
     updated_date = fields.DateTime(dump_only=True)
     created_by = fields.String(dump_only=True)
